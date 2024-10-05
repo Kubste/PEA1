@@ -1,0 +1,6 @@
+Ścieżka pliku wejściowego# C:\Users\jakub\OneDrive\Pulpit\PEAProjekt1\data.txt
+Ścieżak pliku wyjściowego# C:\Users\jakub\OneDrive\Pulpit\PEAProjekt1\results.txt
+Wybrana metoda 1 - losowa 2 - NN 3 - brute force# 2
+Ilość iteracji(dotyczy metody losowej)# 100000
+Wartość optymalna# 60
+Wyświetlanie wskaźnika postępu 0 - wyłączone 1 - włączone# 1
