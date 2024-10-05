@@ -41,6 +41,7 @@ pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix) {
             min_edge.second = INT_MAX;
             Q.erase(remove(Q.begin(), Q.end(), min_edge.first), Q.end());
         }
+        cout << "test" << endl;
     }
 
     return results;
