@@ -25,6 +25,9 @@ class Main {
         vector<vector<int>> matrix;
         TSP tsp;
 
+        void print_info();
+        void print_results(pair<vector<int>, int> results, vector<chrono::duration<double, milli>> times);
+
         void assign_parameters(pair<vector<string>, vector<int>> parameters);
 };
 

@@ -1,31 +1,52 @@
 #include "TSP.hpp"
 using namespace std;
 
-pair<vector<int>, int> TSP::random(vector<vector<int>> matrix) {
+pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int iterations, vector<chrono::duration<double, milli>> &times) {
     pair<vector<int>, int> results;
     vector<int> path;
-    for(int i = 0; i < matrix.size(); i++) path.push_back(i);
-
+    int path_length;
     random_device random;
     mt19937 g(random());
-    shuffle(path.begin(), path.end(), g);
+    results.second = INT_MAX;
+    chrono::high_resolution_clock::time_point t0, t1;
 
-    results.first = path;
-    results.second = calculate_path_length(matrix, path);
+    for(int j = 0; j < iterations; j++) {
+        t0 = chrono::high_resolution_clock::now();
+        for(int i = 0; i < matrix.size(); i++) path.push_back(i);
+        shuffle(path.begin(), path.end(), g);
+        path.push_back(path.front());
 
+        results.first = path;
+        path_length = calculate_path_length(matrix, path);
+        if(path_length < results.second && path_length != -1) {
+            results.first = path;
+            results.second = path_length;
+        }
+        path.clear();
+        path.shrink_to_fit();
+        t1 = chrono::high_resolution_clock::now();
+        times.emplace_back(t1 - t0);
+    }
     return results;
 }
 
-pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix) {
+pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, vector<chrono::duration<double, milli>> &times) {
     pair<vector<int>, int> results;
     vector<int> path;
     vector<int> Q;
     pair<int, int> min_edge;
     int current_node;
+    int path_length;
+    results.second = INT_MAX;
+    chrono::high_resolution_clock::time_point t0, t1;
 
     for(int j = 0; j < matrix.size(); j++) {
+        t0 = chrono::high_resolution_clock::now();
+        path.clear();
+        path.shrink_to_fit();
         current_node = j;
         path.push_back(j);
+        path_length = 0;
         for(int i = 0; i < matrix.size(); i++) Q.push_back(i);
         Q.erase(remove(Q.begin(), Q.end(), j), Q.end());
         min_edge.second = INT_MAX;
@@ -38,32 +59,46 @@ pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix) {
             }
             path.push_back(min_edge.first);
             current_node = min_edge.first;
-            min_edge.second = INT_MAX;
             Q.erase(remove(Q.begin(), Q.end(), min_edge.first), Q.end());
+            if(min_edge.second == INT_MAX) {
+                path_length = INT_MAX;
+                break;
+            }
+            path_length = path_length + min_edge.second;
+            min_edge.second = INT_MAX;
         }
-        cout << "test" << endl;
+        path.push_back(j);
+        if(path_length != INT_MAX && matrix[j][current_node] != -1) path_length = path_length + matrix[j][current_node];
+        if(path_length < results.second) {
+            results.first = path;
+            results.second = path_length;
+        }
+        t1 = chrono::high_resolution_clock::now();
+        times.emplace_back(t1 - t0);
     }
-
     return results;
 }
 
-pair<vector<int>, int> TSP::brute_force(vector<vector<int>> matrix) {
+pair<vector<int>, int> TSP::brute_force(const vector<vector<int>>& matrix, vector<chrono::duration<double, milli>> &times) {
     int j = 1;
     int current_path;
     vector<int> min_path;
     pair<vector<int>, int> results;
     vector<int> path;
+    chrono::high_resolution_clock::time_point t0, t1;
 
     results.second = INT_MAX;
     for(int i = 0; i < matrix.size(); i++) path.push_back(i);
 
     do {
-        cout << j++ << endl;
+        t0 = chrono::high_resolution_clock::now();
         current_path = calculate_path_length(matrix, path);
         if(current_path < results.second && current_path != -1) {
             results.first = path;
             results.second = current_path;
         }
+        t1 = chrono::high_resolution_clock::now();
+        times.emplace_back(t1 - t0);
     } while(next_permutation(path.begin(), path.end()));
 
     return results;
@@ -76,6 +111,5 @@ int TSP::calculate_path_length(vector<vector<int>> matrix, vector<int> path) {
         if(matrix[path[i]][path[i + 1]] == -1) return -1;
         else path_length = path_length + matrix[path[i]][path[i + 1]];
     }
-    path_length = path_length + matrix[path[path.size() - 1]][path[0]];
     return path_length;
 }

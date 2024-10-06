@@ -1,31 +1,32 @@
 #include "Main.hpp"
 #include <iostream>
 #include <ctime>
+#include <chrono>
+
 using namespace std;
 
 void Main::run() {
-    int min_path = -1;
-    int current_path;
     pair<vector<int>, int> results;
+    vector<chrono::duration<double, milli>> times;
 
     assign_parameters(file_manager.read_config_file(config_path));
     matrix = file_manager.read_data_file(data_path);
 
+    print_info();
+
     if(method == 1) {
-        min_path = tsp.random(matrix).second;
-        for(int i = 0; i < iterations - 1; i++) {
-            current_path = tsp.random(matrix).second;
-            if(current_path < min_path && current_path != -1) min_path = current_path;
-        }
-        cout << min_path << endl;
-    } else if(method == 2) {
-        tsp.nn(matrix);
-    } else if(method == 3) {
-        results = tsp.brute_force(matrix);
-        cout << results.second << endl;
-        for(int i = 0; i < results.first.size(); i++) cout << results.first[i] << " -> ";
-        cout << endl;
+        results = tsp.random(matrix, iterations, times);
+        print_results(results, times);
     }
+    else if(method == 2) {
+        results = tsp.nn(matrix, times);
+        print_results(results, times);
+    }
+    else if(method == 3) {
+        results = tsp.brute_force(matrix, times);
+        print_results(results, times);
+    }
+
 }
 
 void Main::assign_parameters(pair<vector<string>, vector<int>> parameters) {
@@ -35,6 +36,32 @@ void Main::assign_parameters(pair<vector<string>, vector<int>> parameters) {
     iterations = parameters.second[1];
     optimal_value = parameters.second[2];
     progress_indicator = parameters.second[3];
+}
+
+void Main::print_info() {
+
+    size_t position = data_path.find_last_of('\\');
+    cout << "Plik zawierajacy dane problemu: " << data_path.substr(position + 1) << endl;
+    cout << "Wynik optymalny: " << optimal_value << endl;
+    cout << "Wybrana metoda: ";
+    if(method == 1) cout << "losowa" << endl;
+    else if(method == 2) cout << "najblizszego sasiada" << endl;
+    else if(method == 3) cout << "przeglad zupelny" << endl;
+}
+
+void Main::print_results(pair<vector<int>, int> results, vector<chrono::duration<double, milli>> times) {
+    chrono::duration<double, milli> total_time{};
+
+
+    cout << "Otrzymana najkrotsza sciezka: ";
+    for(int i = 0; i < results.first.size() - 1; i++) cout << results.first[i] << " -> ";
+    cout << results.first.back() << endl;
+    cout << "Dlugosc otrzymanej sciezki: " << results.second << endl;
+
+    for(int i = 0; i < times.size(); i++) total_time = total_time + times[i];
+
+    cout << "Sredni czas rozwiazania: " << (total_time / times.size()).count() << " ms" << endl;
+    cout << "Laczny czas rozwiazania: " << total_time.count() << " ms" << endl;
 }
 
 int main() {
