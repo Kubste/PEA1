@@ -67,11 +67,10 @@ void Main::print_results(pair<vector<int>, int> results, vector<chrono::duration
 }
 
 int main() {
-    srand(time(0));
     Main main_obj{};
     main_obj.run();
 
-    cout << "Nacisnij dowolny przycisk aby zakonczyc" << endl;
+    cout << "Nacisnij Enter aby zakonczyc" << endl;
     getchar();
 
     return 0;

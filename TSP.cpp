@@ -6,7 +6,7 @@ pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int iterat
     vector<int> path;
     int path_length;
     random_device random;
-    mt19937 g(random());
+    mt19937 g(static_cast<unsigned>(chrono::system_clock::now().time_since_epoch().count()));
     results.second = INT_MAX;
     chrono::high_resolution_clock::time_point t0, t1;
 
