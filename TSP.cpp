@@ -16,7 +16,6 @@ pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int iterat
         shuffle(path.begin(), path.end(), g);
         path.push_back(path.front());
 
-        results.first = path;
         path_length = calculate_path_length(matrix, path);
         if(path_length < results.second && path_length != -1) {
             results.first = path;
@@ -26,6 +25,7 @@ pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int iterat
         path.shrink_to_fit();
         t1 = chrono::high_resolution_clock::now();
         times.emplace_back(t1 - t0);
+        cout << j << endl;
     }
     return results;
 }
@@ -52,8 +52,8 @@ pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, vector<chrono::durati
         min_edge.second = INT_MAX;
         for(int k = 0; k < matrix.size() - 1; k++) {
             for(int i = 0; i < matrix.size(); i++) {
-                if(matrix[i][current_node] < min_edge.second && matrix[i][current_node] != -1 && find(Q.begin(), Q.end(), i) != Q.end()) {
-                    min_edge.second = matrix[i][current_node];
+                if(matrix[current_node][i] < min_edge.second && matrix[current_node][i] != -1 && find(Q.begin(), Q.end(), i) != Q.end()) {
+                    min_edge.second = matrix[current_node][i];
                     min_edge.first = i;
                 }
             }
@@ -68,7 +68,7 @@ pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, vector<chrono::durati
             min_edge.second = INT_MAX;
         }
         path.push_back(j);
-        if(path_length != INT_MAX && matrix[j][current_node] != -1) path_length = path_length + matrix[j][current_node];
+        if(path_length != INT_MAX && matrix[current_node][j] != -1) path_length = path_length + matrix[current_node][j];
         if(path_length < results.second) {
             results.first = path;
             results.second = path_length;
@@ -80,25 +80,29 @@ pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, vector<chrono::durati
 }
 
 pair<vector<int>, int> TSP::brute_force(const vector<vector<int>>& matrix, vector<chrono::duration<double, milli>> &times) {
-    int j = 1;
-    int current_path;
+    int j = 0;
+    int current_path_length;
     vector<int> min_path;
     pair<vector<int>, int> results;
     vector<int> path;
+    vector<int> path_to_calculate;
     chrono::high_resolution_clock::time_point t0, t1;
 
     results.second = INT_MAX;
     for(int i = 0; i < matrix.size(); i++) path.push_back(i);
 
     do {
+        path_to_calculate = path;
+        path_to_calculate.push_back(path_to_calculate.front());
         t0 = chrono::high_resolution_clock::now();
-        current_path = calculate_path_length(matrix, path);
-        if(current_path < results.second && current_path != -1) {
-            results.first = path;
-            results.second = current_path;
+        current_path_length = calculate_path_length(matrix, path_to_calculate);
+        if(current_path_length < results.second && current_path_length != -1) {
+            results.first = path_to_calculate;
+            results.second = current_path_length;
         }
         t1 = chrono::high_resolution_clock::now();
         times.emplace_back(t1 - t0);
+        cout << ++j << endl;
     } while(next_permutation(path.begin(), path.end()));
 
     return results;

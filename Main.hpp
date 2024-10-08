@@ -14,7 +14,7 @@ class Main {
         void run();
 
     private:
-        string config_path = R"(C:\Users\jakub\OneDrive\Pulpit\PEAProjekt1\config.txt)";
+        string config_path = R"(config.txt)";
         string data_path;
         string result_path;
         int method;
