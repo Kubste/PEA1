@@ -9,7 +9,7 @@ class File_manager {
 
     public:
         pair<vector<string>, vector<int>> read_config_file(const string& path);
-        vector<vector<int>> read_data_file(const string& path);
+        pair<vector<vector<int>>, int> read_data_file(const string& path);
 };
 
 #endif

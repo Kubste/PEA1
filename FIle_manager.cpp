@@ -29,7 +29,8 @@ pair<vector<string>, vector<int>> File_manager::read_config_file(const string& p
     return results;
 }
 
-vector<vector<int>> File_manager::read_data_file(const string& path) {
+pair<vector<vector<int>>, int> File_manager::read_data_file(const string& path) {
+    pair<vector<vector<int>>, int> data;
     vector<vector<int>> matrix;
     string line;
     ifstream file;
@@ -47,9 +48,12 @@ vector<vector<int>> File_manager::read_data_file(const string& path) {
             while(ss >> number) row.push_back(number);
             matrix.push_back(row);
         }
+        getline(file, line);
+        data.second = stoi(line);
     }
 
     file.close();
 
-    return matrix;
+    data.first = matrix;
+    return data;
 }

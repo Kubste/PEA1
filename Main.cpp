@@ -8,9 +8,12 @@ using namespace std;
 void Main::run() {
     pair<vector<int>, int> results;
     vector<chrono::duration<double, milli>> times;
+    pair<vector<vector<int>>, int> data;
 
     assign_parameters(file_manager.read_config_file(config_path));
-    matrix = file_manager.read_data_file(data_path);
+    data = file_manager.read_data_file(data_path);
+    matrix = data.first;
+    optimal_value = data.second;
 
     print_info();
 
@@ -34,8 +37,7 @@ void Main::assign_parameters(pair<vector<string>, vector<int>> parameters) {
     result_path = parameters.first[1];
     method = parameters.second[0];
     iterations = parameters.second[1];
-    optimal_value = parameters.second[2];
-    progress_indicator = parameters.second[3];
+    progress_indicator = parameters.second[2];
 }
 
 void Main::print_info() {
