@@ -15,21 +15,21 @@ void Main::run() {
     matrix = data.first;
     optimal_value = data.second;
 
-    print_info();
-
     if(method == 1) {
-        results = tsp.random(matrix, iterations, times);
+        results = tsp.random(matrix, iterations, times, progress_indicator);
+        print_info();
         print_results(results, times);
     }
     else if(method == 2) {
-        results = tsp.nn(matrix, times);
+        results = tsp.nn(matrix, times, progress_indicator);
+        print_info();
         print_results(results, times);
     }
     else if(method == 3) {
-        results = tsp.brute_force(matrix, times);
+        results = tsp.brute_force(matrix, times, progress_indicator);
+        print_info();
         print_results(results, times);
     }
-
 }
 
 void Main::assign_parameters(pair<vector<string>, vector<int>> parameters) {
@@ -70,6 +70,9 @@ int main() {
     srand(time(0));
     Main main_obj{};
     main_obj.run();
+
+    cout << "Nacisnij dowolny przycisk aby zakonczyc" << endl;
+    getchar();
 
     return 0;
 }

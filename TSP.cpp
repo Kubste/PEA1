@@ -1,7 +1,7 @@
 #include "TSP.hpp"
 using namespace std;
 
-pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int iterations, vector<chrono::duration<double, milli>> &times) {
+pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int iterations, vector<chrono::duration<double, milli>> &times, int progress_indicator) {
     pair<vector<int>, int> results;
     vector<int> path;
     int path_length;
@@ -25,12 +25,12 @@ pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int iterat
         path.shrink_to_fit();
         t1 = chrono::high_resolution_clock::now();
         times.emplace_back(t1 - t0);
-        cout << j << endl;
+        if(progress_indicator) cout << j << endl;
     }
     return results;
 }
 
-pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, vector<chrono::duration<double, milli>> &times) {
+pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, vector<chrono::duration<double, milli>> &times, int progress_indicator) {
     pair<vector<int>, int> results;
     vector<int> path;
     vector<int> Q;
@@ -75,11 +75,12 @@ pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, vector<chrono::durati
         }
         t1 = chrono::high_resolution_clock::now();
         times.emplace_back(t1 - t0);
+        if(progress_indicator) cout << j << endl;
     }
     return results;
 }
 
-pair<vector<int>, int> TSP::brute_force(const vector<vector<int>>& matrix, vector<chrono::duration<double, milli>> &times) {
+pair<vector<int>, int> TSP::brute_force(const vector<vector<int>>& matrix, vector<chrono::duration<double, milli>> &times, int progress_indicator) {
     int j = 0;
     int current_path_length;
     vector<int> min_path;
@@ -102,7 +103,7 @@ pair<vector<int>, int> TSP::brute_force(const vector<vector<int>>& matrix, vecto
         }
         t1 = chrono::high_resolution_clock::now();
         times.emplace_back(t1 - t0);
-        cout << ++j << endl;
+        if(progress_indicator) cout << ++j << endl;
     } while(next_permutation(path.begin(), path.end()));
 
     return results;
