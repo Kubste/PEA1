@@ -57,3 +57,22 @@ pair<vector<vector<int>>, int> File_manager::read_data_file(const string& path) 
     data.first = matrix;
     return data;
 }
+
+void File_manager::write_to_file(std::string data_name, const std::string& results_name, int optimal_value, vector<chrono::duration<double, milli>> total_times,
+                                 chrono::duration<double, milli> time, float absolute_error, float relative_error) {
+
+    ofstream file(results_name);
+
+    file << "Nazwa instancji," << data_name << "\n";
+    file << "Wynik optymalny," << optimal_value << "\n";
+    file << "Sredni czas wykonania," << time.count() << "\n";
+    file << "Sredni blad bezwzgledny," << absolute_error << "\n";
+    file << "Sredni blad wzgledny," << relative_error << "\n";
+    file << "Numer proby,Czas wykonania" << "\n";
+
+    for(int i = 0; i < total_times.size(); i++) {
+        file << i + 1 << "," << total_times[i].count() << "\n";
+    }
+
+    file.close();
+}

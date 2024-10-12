@@ -1,14 +1,18 @@
-cmake_minimum_required(VERSION 3.10)  # Możesz ustawić odpowiednią wersję
-project(PEAProjekt1)
+# Ustawienie minimalnej wersji CMake
+cmake_minimum_required(VERSION 3.10)
 
-# Ustaw ścieżkę do vcpkg
-set(CMAKE_TOOLCHAIN_FILE "C:/Users/jakub/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
+# Ustalamy nazwę projektu
+project(PEAProjekt1)  # Zmień MyProject na nazwę swojego projektu
 
-# Dodaj swoje źródła
-add_executable(PEAProjekt1 main.cpp)
+# Dodaj ścieżki do katalogów z nagłówkami i bibliotekami
+include_directories(include)
+link_directories(libs)
 
-# Wyszukaj pakiet
-find_package(xlsxwriter CONFIG REQUIRED)
+# Znajdowanie biblioteki xlsxwriter
+find_package(xlsxwriter REQUIRED)
 
-# Dodaj bibliotekę do projektu
-target_link_libraries(PEAProjekt1 PRIVATE xlsxwriter)
+# Ustawienie pliku źródłowego
+add_executable(PEAProjekt1 main.cpp)  # Zmień MyExecutable i main.cpp na odpowiednie nazwy
+
+# Linkowanie biblioteki xlsxwriter
+target_link_libraries(MyExecutable PRIVATE xlsxwriter)

@@ -18,16 +18,22 @@ class Main {
         string data_path;
         string result_path;
         int method;
-        int iterations;
+        int minutesR;
+        int minutesB;
         int optimal_value;
         int progress_indicator;
+        int repetitions;
         File_manager file_manager;
         vector<vector<int>> matrix;
         TSP tsp;
+        chrono::duration<double, milli> total_time{};
+        float total_absolute_error;
+        float total_relative_error;
+        vector<chrono::duration<double, milli>> total_times;
 
         void print_info();
-        void print_results(pair<vector<int>, int> results, vector<chrono::duration<double, milli>> times);
-
+        void print_partial_results(pair<vector<int>, int> results, vector<chrono::duration<double, milli>> &times, int repetition);
+        void print_total_results();
         void assign_parameters(pair<vector<string>, vector<int>> parameters);
 };
 
