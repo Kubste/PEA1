@@ -15,6 +15,8 @@ class TSP {
         pair<vector<int>, int> random(const vector<vector<int>>& matrix, int minutes, vector<chrono::duration<double, milli>> &times, int progress_indicator);
         pair<vector<int>, int> nn(vector<vector<int>> matrix, vector<chrono::duration<double, milli>> &times, int progress_indicator);
         pair<vector<int>, int> brute_force(const vector<vector<int>>& matrix, int minutes, vector<chrono::duration<double, milli>> &times, int progress_indicator);
+        void explore_paths(vector<int> path, int path_length, vector<int> Q, vector<chrono::duration<double, milli>> &times, int current_node, int start_node,
+                            pair<vector<int>, int> &results, vector<vector<int>> matrix);
 
     private:
         int calculate_path_length(vector<vector<int>> matrix, vector<int> path);
