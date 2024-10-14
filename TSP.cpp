@@ -1,7 +1,7 @@
 #include "TSP.hpp"
 using namespace std;
 
-pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int minutes, vector<chrono::duration<double, milli>> &times, int progress_indicator) {
+pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int minutes, chrono::duration<double, micro> &time, int progress_indicator) {
     pair<vector<int>, int> results;
     vector<int> path;
     int path_length;
@@ -29,13 +29,13 @@ pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int minute
         path.clear();
         path.shrink_to_fit();
         t1 = chrono::high_resolution_clock::now();
-        times.emplace_back(t1 - t0);
+        time = time + chrono::duration_cast<chrono::microseconds>(t1 - t0);
         if(progress_indicator) cout << j++ << endl;
     }
     return results;
 }
 
-pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, vector<chrono::duration<double, milli>> &times, int progress_indicator) {
+pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, chrono::duration<double, micro> &time, int progress_indicator) {
     pair<vector<int>, int> results;
     results.second = INT_MAX;
     chrono::high_resolution_clock::time_point t0, t1;
@@ -50,16 +50,16 @@ pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, vector<chrono::durati
         int path_length = 0;
 
         for(int i = 0; i < matrix.size(); i++) if(i != j) Q.push_back(i);
-        explore_paths(path, path_length, Q, times, j, j, results, matrix);
+        explore_paths(path, path_length, Q, time, j, j, results, matrix);
         t1 = chrono::high_resolution_clock::now();
-        times.emplace_back(t1 - t0);
+        time = time + chrono::duration_cast<chrono::microseconds>(t1 - t0);
 
         if(progress_indicator) cout << "Completed for start node: " << j << endl;
     }
     return results;
 }
 
-void TSP::explore_paths(vector<int> path, int path_length, vector<int> Q, vector<chrono::duration<double, milli>> &times, int current_node, int start_node,
+void TSP::explore_paths(vector<int> path, int path_length, vector<int> Q, chrono::duration<double, micro> &time, int current_node, int start_node,
                         pair<vector<int>, int> &results, vector<vector<int>> matrix) {
 
     if(Q.empty()) {
@@ -87,7 +87,6 @@ void TSP::explore_paths(vector<int> path, int path_length, vector<int> Q, vector
         }
     }
 
-    // Dla każdej z minimalnych krawędzi wywołujemy rekurencyjnie funkcję
     for(int i = 0; i < min_edges.size(); i++) {
         int next_node = min_edges[i].first;
         int edge_length = min_edges[i].second;
@@ -97,11 +96,11 @@ void TSP::explore_paths(vector<int> path, int path_length, vector<int> Q, vector
         vector<int> new_Q = Q;
         new_Q.erase(remove(new_Q.begin(), new_Q.end(), next_node), new_Q.end());
 
-        explore_paths(new_path, path_length + edge_length, new_Q, times, next_node, start_node, results, matrix);
+        explore_paths(new_path, path_length + edge_length, new_Q, time, next_node, start_node, results, matrix);
     }
 }
 
-pair<vector<int>, int> TSP::brute_force(const vector<vector<int>>& matrix, int minutes, vector<chrono::duration<double, milli>> &times, int progress_indicator) {
+pair<vector<int>, int> TSP::brute_force(const vector<vector<int>>& matrix, int minutes, chrono::duration<double, micro> &time, int progress_indicator) {
     double j = 1;
     int current_path_length;
     vector<int> min_path;
@@ -129,7 +128,7 @@ pair<vector<int>, int> TSP::brute_force(const vector<vector<int>>& matrix, int m
             results.second = current_path_length;
         }
         t1 = chrono::high_resolution_clock::now();
-        times.emplace_back(t1 - t0);
+        time = time + chrono::duration_cast<chrono::microseconds>(t1 - t0);
         if(progress_indicator) cout << j << endl;
         j++;
     } while(next_permutation(path.begin(), path.end()));

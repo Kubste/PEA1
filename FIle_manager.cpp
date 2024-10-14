@@ -58,8 +58,8 @@ pair<vector<vector<int>>, int> File_manager::read_data_file(const string& path) 
     return data;
 }
 
-void File_manager::write_to_file(std::string data_name, const std::string& results_name, int optimal_value, vector<chrono::duration<double, milli>> total_times,
-                                 chrono::duration<double, milli> time, float absolute_error, float relative_error) {
+void File_manager::write_to_file(std::string data_name, const std::string& results_name, int optimal_value, vector<chrono::duration<double, micro>> total_times,
+                                 chrono::duration<double, micro> time, float absolute_error, float relative_error) {
 
     ofstream file(results_name);
 

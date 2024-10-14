@@ -26,13 +26,13 @@ class Main {
         File_manager file_manager;
         vector<vector<int>> matrix;
         TSP tsp;
-        chrono::duration<double, milli> total_time{};
+        chrono::duration<double, micro> total_time{};
         float total_absolute_error;
         float total_relative_error;
-        vector<chrono::duration<double, milli>> total_times;
+        vector<chrono::duration<double, micro>> total_times;
 
         void print_info();
-        void print_partial_results(pair<vector<int>, int> results, vector<chrono::duration<double, milli>> &times, int repetition);
+        void print_partial_results(pair<vector<int>, int> results, chrono::duration<double, micro> &time, int repetition);
         void print_total_results();
         void assign_parameters(pair<vector<string>, vector<int>> parameters);
 };

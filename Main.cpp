@@ -7,8 +7,9 @@ using namespace std;
 
 void Main::run() {
     pair<vector<int>, int> results;
-    vector<chrono::duration<double, milli>> times;
+    vector<chrono::duration<double, micro>> times;
     pair<vector<vector<int>>, int> data;
+    chrono::duration<double, micro> time{};
 
     assign_parameters(file_manager.read_config_file(config_path));
     data = file_manager.read_data_file(data_path);
@@ -18,12 +19,12 @@ void Main::run() {
     if(progress_indicator == 0) print_info();
 
     for(int i = 0; i < repetitions; i++) {
-        if(method == 1)results = tsp.random(matrix, minutesR, times, progress_indicator);
-        else if(method == 2) results = tsp.nn(matrix, times, progress_indicator);
-        else if(method == 3) results = tsp.brute_force(matrix, minutesB, times, progress_indicator);
+        if(method == 1)results = tsp.random(matrix, minutesR, time, progress_indicator);
+        else if(method == 2) results = tsp.nn(matrix, time, progress_indicator);
+        else if(method == 3) results = tsp.brute_force(matrix, minutesB, time, progress_indicator);
 
         if(progress_indicator) print_info();
-        print_partial_results(results, times, i + 1);
+        print_partial_results(results, time, i + 1);
     }
     print_total_results();
     size_t positionD = data_path.find_last_of('\\');
@@ -54,8 +55,7 @@ void Main::print_info() {
     else if(method == 3) cout << "przeglad zupelny" << endl;
 }
 
-void Main::print_partial_results(pair<vector<int>, int> results, vector<chrono::duration<double, milli>> &times, int repetition) {
-    chrono::duration<double, milli> partial_time{};
+void Main::print_partial_results(pair<vector<int>, int> results, chrono::duration<double, micro> &time, int repetition) {
     float absolute_error;
     float relative_error;
 
@@ -65,12 +65,10 @@ void Main::print_partial_results(pair<vector<int>, int> results, vector<chrono::
     cout << results.first.back() << endl;
     cout << "Dlugosc otrzymanej sciezki: " << results.second << endl;
 
-    for(int i = 0; i < times.size(); i++) partial_time = partial_time + times[i];
-    total_time = total_time + partial_time;
+    total_time = total_time + time;
 
-    cout << "Sredni czas rozwiazania " << repetition << ": " << (partial_time / times.size()).count() << " ms" << endl;
-    cout << "Laczny czas rozwiazania " << repetition << ": " << partial_time.count() << " ms" << endl;
-    total_times.emplace_back(partial_time / times.size());
+    cout << "Laczny czas rozwiazania " << repetition << ": " << time.count() << " micros" << endl;
+    total_times.emplace_back(time);
 
     absolute_error = results.second - optimal_value;
     relative_error = (absolute_error / optimal_value) * 100;
@@ -80,14 +78,13 @@ void Main::print_partial_results(pair<vector<int>, int> results, vector<chrono::
     cout << "Blad bezwzgledny dla rozwiazania " << repetition << ": " << absolute_error << endl;
     cout << "Blad wzgledny dla rozwiazania " << repetition << ": " << relative_error << "%" << endl;
 
-    times.clear();
-    times.shrink_to_fit();
+    time = chrono::duration<double, micro>(0.0);
 }
 
 void Main::print_total_results() {
 
     cout << endl << "Wykonano " << repetitions << " powtorzen" << endl;
-    cout << "Sredni czas wyznaczenia rozwiazania: " << total_time.count() / repetitions << endl;
+    cout << "Sredni czas wyznaczenia rozwiazania: " << total_time.count() / repetitions << " micros" << endl;
     cout << "Sredni blad bezwzgledny: " << total_absolute_error / repetitions << endl;
     cout << "Sredni blad wzgledny: " << total_relative_error / repetitions << "%" << endl;
 
