@@ -38,29 +38,35 @@ pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int minute
 pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, chrono::duration<double, micro> &time, int progress_indicator) {
     pair<vector<int>, int> results;
     results.second = INT_MAX;
+    vector<int> path;
+    vector<int> Q;
     chrono::high_resolution_clock::time_point t0, t1;
 
     for(int j = 0; j < matrix.size(); j++) {
         t0 = chrono::high_resolution_clock::now();
 
-        vector<int> path;
-        vector<int> Q;
-
         path.push_back(j);
-        int path_length = 0;
 
         for(int i = 0; i < matrix.size(); i++) if(i != j) Q.push_back(i);
-        explore_paths(path, path_length, Q, time, j, j, results, matrix);
+        explore_paths(path, 0, Q, time, j, j, results, matrix);
         t1 = chrono::high_resolution_clock::now();
         time = time + chrono::duration_cast<chrono::microseconds>(t1 - t0);
 
         if(progress_indicator) cout << "Ukonczono dla wierzcholka startowego : " << j << endl;
+        path.clear();
+        Q.clear();
     }
     return results;
 }
 
 void TSP::explore_paths(vector<int> path, int path_length, vector<int> Q, chrono::duration<double, micro> &time, int current_node, int start_node,
                         pair<vector<int>, int> &results, vector<vector<int>> matrix) {
+    vector<pair<int, int>> min_edges;
+    int min_edge_value = INT_MAX;
+    vector<int> new_path;
+    vector<int> new_Q;
+    int next_node;
+    int edge_length;
 
     if(Q.empty()) {
         if(matrix[current_node][start_node] != -1) {
@@ -75,25 +81,23 @@ void TSP::explore_paths(vector<int> path, int path_length, vector<int> Q, chrono
         return;
     }
 
-    vector<pair<int, int>> min_edges;
-    int min_value = INT_MAX;
     for(int i = 0; i < matrix.size(); i++) {
         if(matrix[current_node][i] != -1 && find(Q.begin(), Q.end(), i) != Q.end()) {
-            if(matrix[current_node][i] < min_value) {
+            if(matrix[current_node][i] < min_edge_value) {
                 min_edges.clear();
-                min_value = matrix[current_node][i];
+                min_edge_value = matrix[current_node][i];
                 min_edges.emplace_back(i, matrix[current_node][i]);
-            } else if(matrix[current_node][i] == min_value) min_edges.emplace_back(i, matrix[current_node][i]);
+            } else if(matrix[current_node][i] == min_edge_value) min_edges.emplace_back(i, matrix[current_node][i]);
         }
     }
 
     for(int i = 0; i < min_edges.size(); i++) {
-        int next_node = min_edges[i].first;
-        int edge_length = min_edges[i].second;
+        next_node = min_edges[i].first;
+        edge_length = min_edges[i].second;
 
-        vector<int> new_path = path;
+        new_path = path;
         new_path.push_back(next_node);
-        vector<int> new_Q = Q;
+        new_Q = Q;
         new_Q.erase(remove(new_Q.begin(), new_Q.end(), next_node), new_Q.end());
 
         explore_paths(new_path, path_length + edge_length, new_Q, time, next_node, start_node, results, matrix);

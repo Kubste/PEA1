@@ -1,4 +1,4 @@
-Ścieżka pliku wejściowego# data4.txt
+Ścieżka pliku wejściowego# data12.txt
 Ścieżak pliku wyjściowego# results.csv
 Wybrana metoda 1 - losowa 2 - NN 3 - brute force# 2
 Długość przeszukiwania w minutach dla metody losowej# 1

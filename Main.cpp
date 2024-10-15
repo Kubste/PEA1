@@ -30,7 +30,7 @@ void Main::run() {
     size_t positionD = data_path.find_last_of('\\');
     size_t positionR = data_path.find_last_of('\\');
     file_manager.write_to_file(data_path.substr(positionD + 1), result_path.substr(positionR + 1), optimal_value, total_times,
-                               total_time / repetitions, total_absolute_error / repetitions, total_relative_error / repetitions);
+                               total_time / time_measurements, total_absolute_error / repetitions, total_relative_error / repetitions);
 }
 
 void Main::assign_parameters(pair<vector<string>, vector<int>> parameters) {
@@ -71,6 +71,7 @@ void Main::print_partial_results(pair<vector<int>, int> results, chrono::duratio
     cout << "Dlugosc otrzymanej sciezki: " << results.second << endl;
 
     total_time = total_time + time;
+    if(time.count() != 0) time_measurements++;
 
     cout << "Laczny czas rozwiazania " << repetition << ": " << time.count() << " micros" << endl;
     total_times.emplace_back(time);
@@ -89,9 +90,9 @@ void Main::print_partial_results(pair<vector<int>, int> results, chrono::duratio
 void Main::print_total_results() {
 
     cout << endl << "Wykonano " << repetitions << " powtorzen" << endl;
-    cout << "Sredni czas wyznaczenia rozwiazania: " << total_time.count() / repetitions << " micros" << endl;
+    cout << "Sredni czas wyznaczenia rozwiazania: " << total_time.count() / time_measurements << " micros" << endl;
     cout << "Sredni blad bezwzgledny: " << total_absolute_error / repetitions << endl;
-    cout << "Sredni blad wzgledny: " << total_relative_error / repetitions << "%" << endl;
+    cout << "Sredni blad wzgledny: " << total_relative_error / repetitions << " = " << (total_relative_error / repetitions) * 100 << "% " << endl;
 
 }
 

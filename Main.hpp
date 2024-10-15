@@ -30,6 +30,7 @@ class Main {
         float total_absolute_error;
         float total_relative_error;
         vector<chrono::duration<double, micro>> total_times;
+        int time_measurements = 0;
 
         void print_info();
         void print_partial_results(pair<vector<int>, int> results, chrono::duration<double, micro> &time, int repetition);
