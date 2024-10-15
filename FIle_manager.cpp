@@ -58,7 +58,7 @@ pair<vector<vector<int>>, int> File_manager::read_data_file(const string& path) 
     return data;
 }
 
-void File_manager::write_to_file(std::string data_name, const std::string& results_name, int optimal_value, vector<chrono::duration<double, micro>> total_times,
+void File_manager::write_to_file(string data_name, const std::string& results_name, int optimal_value, vector<chrono::duration<double, micro>> total_times,
                                  chrono::duration<double, micro> time, float absolute_error, float relative_error) {
 
     ofstream file(results_name);
@@ -68,6 +68,7 @@ void File_manager::write_to_file(std::string data_name, const std::string& resul
     file << "Sredni czas wykonania," << time.count() << "\n";
     file << "Sredni blad bezwzgledny," << absolute_error << "\n";
     file << "Sredni blad wzgledny," << relative_error << "\n";
+    file << "Sredni blad wzgledny(w procentach)," << relative_error * 100 << "%" "\n";
     file << "Numer proby,Czas wykonania" << "\n";
 
     for(int i = 0; i < total_times.size(); i++) {

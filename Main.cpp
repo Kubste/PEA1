@@ -23,9 +23,9 @@ void Main::run() {
         else if(method == 2) results = tsp.nn(matrix, time, progress_indicator);
         else if(method == 3) results = tsp.brute_force(matrix, minutesB, time, progress_indicator);
 
-        if(progress_indicator) print_info();
         print_partial_results(results, time, i + 1);
     }
+    if(progress_indicator) print_info();
     print_total_results();
     size_t positionD = data_path.find_last_of('\\');
     size_t positionR = data_path.find_last_of('\\');
@@ -47,19 +47,24 @@ void Main::assign_parameters(pair<vector<string>, vector<int>> parameters) {
 void Main::print_info() {
 
     size_t position = data_path.find_last_of('\\');
-    cout << "Plik zawierajacy dane problemu: " << data_path.substr(position + 1) << endl;
+    cout << endl << "Plik zawierajacy dane problemu: " << data_path.substr(position + 1) << endl;
     cout << "Wynik optymalny: " << optimal_value << endl;
     cout << "Wybrana metoda: ";
     if(method == 1) cout << "losowa" << endl;
     else if(method == 2) cout << "najblizszego sasiada" << endl;
     else if(method == 3) cout << "przeglad zupelny" << endl;
+    cout << "Liczba powtorzen przeszukania: " << repetitions << endl;
+    if(method == 1) cout << "Czas pojedynczego przeszukania: " << minutesR << " min" << endl;
+    else if(method == 3 && minutesB != INT_MAX) cout << "Maksymalny czas przeszukania: " << minutesB << " min" << endl;
+    else if(method == 3) cout << "Brak ograniczenia czasowego" << endl;
+    cout << endl;
 }
 
 void Main::print_partial_results(pair<vector<int>, int> results, chrono::duration<double, micro> &time, int repetition) {
     float absolute_error;
     float relative_error;
 
-    cout << endl << "Wykonano " << repetition << " przeszukanie" << endl;
+    cout << "Wykonano " << repetition << " przeszukanie" << endl;
     cout << "Otrzymana najkrotsza sciezka: ";
     for(int i = 0; i < results.first.size() - 1; i++) cout << results.first[i] << " -> ";
     cout << results.first.back() << endl;
@@ -71,12 +76,12 @@ void Main::print_partial_results(pair<vector<int>, int> results, chrono::duratio
     total_times.emplace_back(time);
 
     absolute_error = results.second - optimal_value;
-    relative_error = (absolute_error / optimal_value) * 100;
+    relative_error = (absolute_error / optimal_value);
     total_absolute_error = total_absolute_error + absolute_error;
     total_relative_error = total_relative_error + relative_error;
 
     cout << "Blad bezwzgledny dla rozwiazania " << repetition << ": " << absolute_error << endl;
-    cout << "Blad wzgledny dla rozwiazania " << repetition << ": " << relative_error << "%" << endl;
+    cout << "Blad wzgledny dla rozwiazania " << repetition << ": " << relative_error << " = " << relative_error * 100 << "% " << endl << endl;
 
     time = chrono::duration<double, micro>(0.0);
 }

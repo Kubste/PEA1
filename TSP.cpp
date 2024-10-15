@@ -54,7 +54,7 @@ pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, chrono::duration<doub
         t1 = chrono::high_resolution_clock::now();
         time = time + chrono::duration_cast<chrono::microseconds>(t1 - t0);
 
-        if(progress_indicator) cout << "Completed for start node: " << j << endl;
+        if(progress_indicator) cout << "Ukonczono dla wierzcholka startowego : " << j << endl;
     }
     return results;
 }
@@ -102,7 +102,7 @@ void TSP::explore_paths(vector<int> path, int path_length, vector<int> Q, chrono
 
 pair<vector<int>, int> TSP::brute_force(const vector<vector<int>>& matrix, int minutes, chrono::duration<double, micro> &time, int progress_indicator) {
     double j = 1;
-    int current_path_length;
+    int path_length;
     vector<int> min_path;
     pair<vector<int>, int> results;
     vector<int> path;
@@ -118,14 +118,14 @@ pair<vector<int>, int> TSP::brute_force(const vector<vector<int>>& matrix, int m
     do {
         auto now = chrono::steady_clock::now();
         auto elapsed = chrono::duration_cast<chrono::minutes>(now - start);
-        if(elapsed.count() >= minutes && j/num_of_paths < 0.9) break;
+        if(elapsed.count() >= minutes && j/num_of_paths < 0.9) return results;
+        t0 = chrono::high_resolution_clock::now();
         path_to_calculate = path;
         path_to_calculate.push_back(path_to_calculate.front());
-        t0 = chrono::high_resolution_clock::now();
-        current_path_length = calculate_path_length(matrix, path_to_calculate);
-        if(current_path_length < results.second && current_path_length != -1) {
+        path_length = calculate_path_length(matrix, path_to_calculate);
+        if(path_length < results.second && path_length != -1) {
             results.first = path_to_calculate;
-            results.second = current_path_length;
+            results.second = path_length;
         }
         t1 = chrono::high_resolution_clock::now();
         time = time + chrono::duration_cast<chrono::microseconds>(t1 - t0);
