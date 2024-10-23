@@ -19,7 +19,7 @@ void Main::run() {
     if(progress_indicator == 0) print_info();
 
     for(int i = 0; i < repetitions; i++) {
-        if(method == 1)results = tsp.random(matrix, minutesR, time, progress_indicator);
+        if(method == 1)results = tsp.random(matrix, minutesR, time, progress_indicator, optimal_value);
         else if(method == 2) results = tsp.nn(matrix, time, progress_indicator);
         else if(method == 3) results = tsp.brute_force(matrix, minutesB, time, progress_indicator);
 

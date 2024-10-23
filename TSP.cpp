@@ -1,7 +1,7 @@
 #include "TSP.hpp"
 using namespace std;
 
-pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int minutes, chrono::duration<double, micro> &time, int progress_indicator) {
+pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int minutes, chrono::duration<double, micro> &time, int progress_indicator, int optimal_value) {
     pair<vector<int>, int> results;
     vector<int> path;
     int path_length;
@@ -11,14 +11,16 @@ pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int minute
     chrono::high_resolution_clock::time_point t0, t1;
     auto start = chrono::steady_clock::now();
     int j = 0;
+    for(int i = 0; i < matrix.size(); i++) path.push_back(i);
 
     while(true) {
         auto now = chrono::steady_clock::now();
         auto elapsed = chrono::duration_cast<chrono::minutes>(now - start);
         if(elapsed.count() >= minutes) break;
         t0 = chrono::high_resolution_clock::now();
-        for(int i = 0; i < matrix.size(); i++) path.push_back(i);
+
         shuffle(path.begin(), path.end(), g);
+        reverse(path.begin() + g() % matrix.size(), path.end());
         path.push_back(path.front());
 
         path_length = calculate_path_length(matrix, path);
@@ -26,11 +28,13 @@ pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int minute
             results.first = path;
             results.second = path_length;
         }
-        path.clear();
-        path.shrink_to_fit();
+
         t1 = chrono::high_resolution_clock::now();
         time = time + chrono::duration_cast<chrono::microseconds>(t1 - t0);
+
+        path.pop_back();
         if(progress_indicator) cout << j++ << endl;
+        if(path_length == optimal_value) break;
     }
     return results;
 }
