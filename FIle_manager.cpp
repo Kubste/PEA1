@@ -32,6 +32,7 @@ pair<vector<string>, vector<int>> File_manager::read_config_file(const string& p
 pair<vector<vector<int>>, int> File_manager::read_data_file(const string& path) {
     pair<vector<vector<int>>, int> data;
     vector<vector<int>> matrix;
+    vector<vector<double>> buffer;
     string line;
     ifstream file;
 
@@ -39,14 +40,29 @@ pair<vector<vector<int>>, int> File_manager::read_data_file(const string& path) 
 
     if(file.is_open()) {
         getline(file, line);
-        int size = stoi(line);
-        for(int i = 0; i < size; i++) {
+        if(stoi(line) == 0) {
             getline(file, line);
-            stringstream ss(line);
-            vector<int> row;
-            int number;
-            while(ss >> number) row.push_back(number);
-            matrix.push_back(row);
+            int size = stoi(line);
+            for(int i = 0; i < size; i++) {
+                getline(file, line);
+                stringstream ss(line);
+                vector<int> row;
+                int number;
+                while(ss >> number) row.push_back(number);
+                matrix.push_back(row);
+            }
+        } else if(stoi(line) == 1) {
+            getline(file, line);
+            int size = stoi(line);
+            for(int i = 0; i < size; i++) {
+                getline(file, line);
+                stringstream ss(line);
+                vector<double> row;
+                float number;
+                while(ss >> number) row.push_back(number);
+                buffer.push_back(row);
+            }
+            matrix = set_matrix(buffer);
         }
         getline(file, line);
         data.second = stoi(line);
@@ -58,10 +74,37 @@ pair<vector<vector<int>>, int> File_manager::read_data_file(const string& path) 
     return data;
 }
 
+vector<vector<int>> File_manager::set_matrix(vector<vector<double>> buffer) {
+    vector<vector<int>> matrix;
+    vector<int> row;
+
+    for(int i = 0; i < buffer.size(); i++) {
+        for(int j = 0; j < buffer.size(); j++) {
+            if(i == j) row.push_back(-1);
+            else row.push_back(static_cast<int>(round((haversine(buffer[i][0], buffer[i][1], buffer[j][0], buffer[j][1])))));
+        }
+        matrix.push_back(row);
+        row.clear();
+    }
+    return matrix;
+}
+
+double File_manager::haversine(double lat1, double lon1, double lat2, double lon2) {
+    const double rad = 6371;
+    double dLat = (lat2 - lat1) * M_PI / 180.0;
+    double dLon = (lon2 - lon1) * M_PI / 180.0;
+
+    lat1 = (lat1) * M_PI / 180.0;
+    lat2 = (lat2) * M_PI / 180.0;
+
+    double sq = pow(sin(dLat / 2), 2) + pow(sin(dLon / 2), 2) * cos(lat1) * cos(lat2);
+    return 2 * rad * asin(sqrt(sq));
+}
+
 void File_manager::write_to_file(string data_name, const std::string& results_name, int optimal_value, vector<chrono::duration<double, micro>> total_times,
                                  chrono::duration<double, micro> time, float absolute_error, float relative_error) {
 
-    ofstream file(results_name);
+    ofstream file(results_name, ios::trunc);
 
     file << "Nazwa instancji," << data_name << "\n";
     file << "Wynik optymalny," << optimal_value << "\n";

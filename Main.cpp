@@ -20,7 +20,7 @@ void Main::run() {
 
     for(int i = 0; i < repetitions; i++) {
         if(method == 1)results = tsp.random(matrix, minutesR, time, progress_indicator, optimal_value);
-        else if(method == 2) results = tsp.nn(matrix, time, progress_indicator);
+        else if(method == 2) results = tsp.nn(matrix, time, progress_indicator, minutesNN);
         else if(method == 3) results = tsp.brute_force(matrix, minutesB, time, progress_indicator);
 
         print_partial_results(results, time, i + 1);
@@ -38,10 +38,12 @@ void Main::assign_parameters(pair<vector<string>, vector<int>> parameters) {
     result_path = parameters.first[1];
     method = parameters.second[0];
     minutesR = parameters.second[1];
-    if(parameters.second[2] == -1) minutesB = INT_MAX;
-    else minutesB = parameters.second[2];
-    repetitions = parameters.second[3];
-    progress_indicator = parameters.second[4];
+    if(parameters.second[2] == -1) minutesNN = INT_MAX;
+    else minutesNN = parameters.second[2];
+    if(parameters.second[3] == -1) minutesB = INT_MAX;
+    else minutesB = parameters.second[3];
+    repetitions = parameters.second[4];
+    progress_indicator = parameters.second[5];
 }
 
 void Main::print_info() {
@@ -73,7 +75,13 @@ void Main::print_partial_results(pair<vector<int>, int> results, chrono::duratio
     total_time = total_time + time;
     if(time.count() != 0) time_measurements++;
 
-    cout << "Laczny czas rozwiazania " << repetition << ": " << time.count() << " micros" << endl;
+    cout << "Czas rozwiazania: " << repetition << ": ";
+    cout << fixed << setprecision(3);
+    if(time.count() >= 180000000) cout << chrono::duration<double, ratio<60>>(time).count() << " min" << endl;
+    else if(time.count() >= 1000000) cout << chrono::duration<double>(time).count() << " s" << endl;
+    else if(time.count() >= 1000) cout << chrono::duration<double, milli>(time).count() << " ms" << endl;
+    else cout << time.count() << " micro" << endl;
+    cout.unsetf(ios::fixed);
     total_times.emplace_back(time);
 
     absolute_error = results.second - optimal_value;
@@ -90,7 +98,13 @@ void Main::print_partial_results(pair<vector<int>, int> results, chrono::duratio
 void Main::print_total_results() {
 
     cout << endl << "Wykonano " << repetitions << " powtorzen" << endl;
-    cout << "Sredni czas wyznaczenia rozwiazania: " << total_time.count() / time_measurements << " micros" << endl;
+    cout << fixed << setprecision(3);
+    cout << "Sredni czas wyznaczenia rozwiazania: ";
+    if(total_time.count() / time_measurements >= 180000000) cout << chrono::duration<double, ratio<60>>(total_time).count() << " min" << endl;
+    else if(total_time.count() / time_measurements >= 1000000) cout << chrono::duration<double>(total_time).count() / time_measurements << " s" << endl;
+    else if(total_time.count() / time_measurements >= 1000) cout << chrono::duration<double, milli>(total_time).count() / time_measurements << " ms" << endl;
+    else cout << total_time.count() / time_measurements << " micro" << endl;
+    cout.unsetf(ios::fixed);
     cout << "Sredni blad bezwzgledny: " << total_absolute_error / repetitions << endl;
     cout << "Sredni blad wzgledny: " << total_relative_error / repetitions << " = " << (total_relative_error / repetitions) * 100 << "% " << endl;
 

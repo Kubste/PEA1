@@ -1,17 +1,8 @@
-Nazwa instancji,data6.txt
-Wynik optymalny,150
-Sredni czas wykonania,97.3
+Nazwa instancji,data12.txt
+Wynik optymalny,249
+Sredni czas wykonania,1.25562e+09
 Sredni blad bezwzgledny,0
 Sredni blad wzgledny,0
 Sredni blad wzgledny(w procentach),0%
 Numer proby,Czas wykonania
-1,110
-2,100
-3,96
-4,98
-5,95
-6,94
-7,98
-8,95
-9,93
-10,94
+1,1.25562e+09

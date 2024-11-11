@@ -39,14 +39,18 @@ pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int minute
     return results;
 }
 
-pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, chrono::duration<double, micro> &time, int progress_indicator) {
+pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, chrono::duration<double, micro> &time, int progress_indicator, int minutes) {
     pair<vector<int>, int> results;
     results.second = INT_MAX;
     vector<int> path;
     vector<int> Q;
     chrono::high_resolution_clock::time_point t0, t1;
+    auto start = chrono::steady_clock::now();
 
     for(int j = 0; j < matrix.size(); j++) {
+        auto now = chrono::steady_clock::now();
+        if(chrono::duration_cast<chrono::minutes>(now - start).count() >= minutes) break;
+
         t0 = chrono::high_resolution_clock::now();
 
         path.push_back(j);

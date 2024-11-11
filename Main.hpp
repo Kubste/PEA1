@@ -5,6 +5,7 @@
 #include "TSP.hpp"
 #include "TSP.cpp"
 #include <string>
+#include <iomanip>
 
 using namespace std;
 
@@ -19,6 +20,7 @@ class Main {
         string result_path;
         int method;
         int minutesR;
+        int minutesNN;
         int minutesB;
         int optimal_value;
         int progress_indicator;
