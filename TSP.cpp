@@ -13,14 +13,12 @@ pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int minute
     int j = 0;
     for(int i = 0; i < matrix.size(); i++) path.push_back(i);
 
-    while(true) {
-        auto now = chrono::steady_clock::now();
-        auto elapsed = chrono::duration_cast<chrono::minutes>(now - start);
-        if(elapsed.count() >= minutes) break;
+    while(chrono::duration_cast<chrono::minutes>(chrono::steady_clock::now() - start).count() < minutes) {
         t0 = chrono::high_resolution_clock::now();
 
         shuffle(path.begin(), path.end(), g);
         reverse(path.begin() + g() % matrix.size(), path.end());
+
         path.push_back(path.front());
 
         path_length = calculate_path_length(matrix, path);
@@ -29,8 +27,7 @@ pair<vector<int>, int> TSP::random(const vector<vector<int>>& matrix, int minute
             results.second = path_length;
         }
 
-        t1 = chrono::high_resolution_clock::now();
-        time = time + chrono::duration_cast<chrono::microseconds>(t1 - t0);
+        time = time + chrono::duration_cast<chrono::microseconds>(chrono::high_resolution_clock::now() - t0);
 
         path.pop_back();
         if(progress_indicator) cout << j++ << endl;
@@ -119,7 +116,7 @@ pair<vector<int>, int> TSP::brute_force(const vector<vector<int>>& matrix, int m
     pair<vector<int>, int> results;
     vector<int> path;
     vector<int> path_to_calculate;
-    chrono::high_resolution_clock::time_point t0, t1;
+    chrono::high_resolution_clock::time_point t0;
     auto start = chrono::steady_clock::now();
 
     double num_of_paths = tgamma(matrix.size() + 1);
@@ -139,8 +136,7 @@ pair<vector<int>, int> TSP::brute_force(const vector<vector<int>>& matrix, int m
             results.first = path_to_calculate;
             results.second = path_length;
         }
-        t1 = chrono::high_resolution_clock::now();
-        time = time + chrono::duration_cast<chrono::microseconds>(t1 - t0);
+        time = time + chrono::duration_cast<chrono::microseconds>(chrono::high_resolution_clock::now() - t0);
         if(progress_indicator) cout << j << endl;
         j++;
     } while(next_permutation(path.begin(), path.end()));

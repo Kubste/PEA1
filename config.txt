@@ -1,8 +1,8 @@
-Ścieżka pliku wejściowego# data12.txt
+Ścieżka pliku wejściowego# data10s.txt
 Ścieżak pliku wyjściowego# results.csv
 Wybrana metoda 1 - losowa 2 - NN 3 - brute force# 3
 Długość przeszukiwania w minutach dla metody losowej# 1
 Maksymalny czas przeszukiwania dla metody NN(-1 -> brak ograniczenia)# 30
-Maksymalny czas przeszukiwania dla metody brute force(-1 -> brak ograniczenia)# 30
-Liczba powtorzeń przeszukiwania instancji# 1
+Maksymalny czas przeszukiwania dla metody brute force(-1 -> brak ograniczenia)# 5
+Liczba powtorzeń przeszukiwania instancji# 10
 Wyświetlanie wskaźnika postępu 0 - wyłączone 1 - włączone# 0
