@@ -45,15 +45,14 @@ pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, chrono::duration<doub
     auto start = chrono::steady_clock::now();
 
     for(int j = 0; j < matrix.size(); j++) {
-        auto now = chrono::steady_clock::now();
-        if(chrono::duration_cast<chrono::minutes>(now - start).count() >= minutes) break;
+        if(chrono::duration_cast<chrono::minutes>(chrono::steady_clock::now() - start).count() >= minutes) break;
 
         t0 = chrono::high_resolution_clock::now();
 
         path.push_back(j);
 
         for(int i = 0; i < matrix.size(); i++) if(i != j) Q.push_back(i);
-        explore_paths(path, 0, Q, time, j, j, results, matrix);
+        explore_paths(path, 0, Q, time, j, j, results, matrix, start, minutes);
         t1 = chrono::high_resolution_clock::now();
         time = time + chrono::duration_cast<chrono::microseconds>(t1 - t0);
 
@@ -65,13 +64,15 @@ pair<vector<int>, int> TSP::nn(vector<vector<int>> matrix, chrono::duration<doub
 }
 
 void TSP::explore_paths(vector<int> path, int path_length, vector<int> Q, chrono::duration<double, micro> &time, int current_node, int start_node,
-                        pair<vector<int>, int> &results, vector<vector<int>> matrix) {
+                        pair<vector<int>, int> &results, vector<vector<int>> matrix, chrono::time_point<std::chrono::steady_clock> start,  int minutes) {
     vector<pair<int, int>> min_edges;
     int min_edge_value = INT_MAX;
     vector<int> new_path;
     vector<int> new_Q;
     int next_node;
     int edge_length;
+
+    if(chrono::duration_cast<chrono::minutes>(chrono::steady_clock::now() - start).count() >= minutes) return;
 
     if(Q.empty()) {
         if(matrix[current_node][start_node] != -1) {
@@ -105,7 +106,7 @@ void TSP::explore_paths(vector<int> path, int path_length, vector<int> Q, chrono
         new_Q = Q;
         new_Q.erase(remove(new_Q.begin(), new_Q.end(), next_node), new_Q.end());
 
-        explore_paths(new_path, path_length + edge_length, new_Q, time, next_node, start_node, results, matrix);
+        explore_paths(new_path, path_length + edge_length, new_Q, time, next_node, start_node, results, matrix, start,minutes);
     }
 }
 

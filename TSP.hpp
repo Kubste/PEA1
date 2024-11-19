@@ -16,7 +16,7 @@ class TSP {
         pair<vector<int>, int> nn(vector<vector<int>> matrix, chrono::duration<double, micro> &time, int progress_indicator, int minutes);
         pair<vector<int>, int> brute_force(const vector<vector<int>>& matrix, int minutes, chrono::duration<double, micro> &time, int progress_indicator);
         void explore_paths(vector<int> path, int path_length, vector<int> Q, chrono::duration<double, micro> &time, int current_node, int start_node,
-                            pair<vector<int>, int> &results, vector<vector<int>> matrix);
+                            pair<vector<int>, int> &results, vector<vector<int>> matrix, chrono::time_point<std::chrono::steady_clock> start,  int minutes);
 
     private:
         int calculate_path_length(vector<vector<int>> matrix, vector<int> path);

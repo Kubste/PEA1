@@ -17,6 +17,9 @@ void Main::run() {
     optimal_value = data.second;
 
     if(progress_indicator == 0) print_info();
+    cout << "Zakonczono przygotowywanie" << endl;
+    system("pause");
+    cout << endl;
 
     for(int i = 0; i < repetitions; i++) {
         if(method == 1)results = tsp.random(matrix, minutesR, time, progress_indicator, optimal_value);
